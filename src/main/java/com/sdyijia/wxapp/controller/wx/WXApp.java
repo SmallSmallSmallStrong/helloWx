@@ -1,4 +1,4 @@
-package com.sdyijia.wxapp.controller;
+package com.sdyijia.wxapp.controller.wx;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.util.JSONPObject;
