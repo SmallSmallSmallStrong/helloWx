@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--重新登录时会判断当前用户是否登录如果已经登录则返回主页否则返回登录页-->
+<a href="../login">主页</a>
+
+
+<div>
+    <a th:href="@{/role/toadd}">添加角色</a>
+</div>
+<table>
+    <tr>
+        <th>角色名</th>
+        <th>是否可用</th>
+        <th>描述</th>
+        <th>操作</th>
+    </tr>
+    <tr th:each="role , stat : ${rolelist}">
+        <td th:text="${role.getRole()}"></td>
+        <td th:text="${role.getAvailable()}"></td>
+        <td th:text="${role.getDescription()}"></td>
+        <td>
+            <a th:href="@{'role/permission?ids='  + ${role.id} }">角色权限管理</a>
+        </td>
+        <td>
+            <a th:href="@{'role/toupdate?id=' + ${role.id}}">修改</a>
+            <a th:href="@{role/remove}">删除</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

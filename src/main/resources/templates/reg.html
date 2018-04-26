@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+</head>
+<body>
+注册用户
+<form th:action="@{/user/}" th:method="post">
+    填写您想要的用户名 <input th:name="username" type="text"><br>
+    密码 <input th:name="password" type="text"><br>
+    昵称 <input th:name="name" type="text"><br>
+    <button type="submit"> 注册</button>
+</form>
+</body>
+</html>

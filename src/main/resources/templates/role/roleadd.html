@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>角色添加</title>
+</head>
+<body>
+<form th:action="@{roleadd}" th:method="post">
+    角色名<input type="text" th:name="role">
+    角色描述<input type="text" th:name="description">
+    是否可用&nbsp;&nbsp;<input th:type="checkbox" th:name="available" th:value="true">可用
+    <input th:type="checkbox" th:name="available" th:value="false">不可用
+    <input th:type="reset" type="reset" th:value="重置">
+    <input th:type="submit" th:value="提交">
+</form>
+</body>
+</html>

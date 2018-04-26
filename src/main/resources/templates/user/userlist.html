@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户列表</title>
+</head>
+<body>
+<!--重新登录时会判断当前用户是否登录如果已经登录则返回主页否则返回登录页-->
+<a href="../login">主页</a>
+    <table>
+        <tr>
+            <th>账号</th>
+            <th>名称</th>
+            <th>微信</th>
+            <th>掩码</th>
+            <th>用户状态</th>
+            <th>操作</th>
+        </tr>
+
+        <tr th:each="user,index:${userlist}">
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.name}"></td>
+            <td th:text="${user.wxUser}"></td>
+            <td th:text="${user.salt}"></td>
+            <td th:text="${user.state}"></td>
+            <td  >
+                <a th:href="@{'del?id=' + ${user.id}}">删除</a>
+                <a th:href="@{'resetpwd?id=' + ${user.id}}">重置密码</a>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

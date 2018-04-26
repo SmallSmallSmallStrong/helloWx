@@ -1,6 +1,7 @@
 package com.sdyijia.wxapp.controller;
 
 import com.sdyijia.wxapp.bean.SysUser;
+import com.sdyijia.wxapp.util.EncryptionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
@@ -22,9 +23,13 @@ public class MainController {
     public final static Logger logger = LoggerFactory.getLogger(MainController.class);
 
     @GetMapping("/login")
-    public String login(Model m ,RedirectAttributes redirectAttributes ) {
+    public String login(Model m, RedirectAttributes redirectAttributes) {
+        Subject currentUser = SecurityUtils.getSubject();
+        if (currentUser.isAuthenticated()) {
+            return "index";
+        }
         Map<String, ?> map = redirectAttributes.getFlashAttributes();
-        if (map != null && map.size() > 0  ){
+        if (map != null && map.size() > 0) {
             m.addAllAttributes(map);
         }
         return "login";
@@ -42,7 +47,15 @@ public class MainController {
         }
         String loginName = user.getUsername();
         logger.info("准备登陆用户 =>  " + loginName);
-        UsernamePasswordToken token = new UsernamePasswordToken(loginName, user.getPassword());
+        //目前的掩码使用的是EncryptionUtils类的私有变量
+        String salt = user.getSalt();
+        String pwd = "";
+        if (salt != null && !salt.equals("")) {
+            pwd = EncryptionUtils.getSha512Hash(user.getPassword(), salt);
+        } else {
+            pwd = EncryptionUtils.getSha512Hash(user.getPassword());
+        }
+        UsernamePasswordToken token = new UsernamePasswordToken(loginName, pwd);
         //获取当前的Subject
         Subject currentUser = SecurityUtils.getSubject();
         try {
@@ -73,7 +86,7 @@ public class MainController {
         //验证是否登录成功
         if (currentUser.isAuthenticated()) {
             logger.info("用户[" + loginName + "]登录认证通过(这里可以进行一些认证通过后的一些系统参数初始化操作)");
-            return "redirect:/index";
+            return "index";
         } else {
             token.clear();
             return "redirect:/login";

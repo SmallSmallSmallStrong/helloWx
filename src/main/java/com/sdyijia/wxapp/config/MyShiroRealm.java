@@ -4,10 +4,12 @@ import com.sdyijia.wxapp.bean.SysPermission;
 import com.sdyijia.wxapp.bean.SysRole;
 import com.sdyijia.wxapp.bean.SysUser;
 import com.sdyijia.wxapp.repository.UserRepository;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -15,6 +17,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class MyShiroRealm extends AuthorizingRealm {
@@ -33,13 +36,19 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         logger.info("权限配置-->MyShiroRealm.doGetAuthorizationInfo()");
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        //通过PrincipalCollection获取当前用户信息
         SysUser userInfo = (SysUser) principals.getPrimaryPrincipal();
-        for (SysRole role : userInfo.getRoleList()) {
-            authorizationInfo.addRole(role.getRole());
-            for (SysPermission p : role.getPermissions()) {
-                authorizationInfo.addStringPermission(p.getPermission());
+        if (Objects.nonNull(userInfo)) {
+            for (SysRole role : userInfo.getRoleList()) {
+                //在此处为用户设置角色
+                authorizationInfo.addRole(role.getRole());
+                for (SysPermission p : role.getPermissions()) {
+                    //为用户设置权限
+                    authorizationInfo.addStringPermission(p.getPermission());
+                }
             }
-        }
+        } else throw new AuthorizationException();
+        logger.info("###【获取角色成功】[SessionId] =>  " + SecurityUtils.getSubject().getSession().getId());
         return authorizationInfo;
     }
 

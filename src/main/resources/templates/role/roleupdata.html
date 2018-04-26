@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>角色更新</title>
+</head>
+<body>
+<form th:action="@{role/updata}" th:method="post">
+    角色名<input th:name="role" type="text" th:value="${role.role}"><br>
+    角色描述<input th:name="description" type="text" th:value="${role.description}"><br>
+    角色是否可用<input th:name="available" type="text" th:value="${role.available}"><br>
+</form>
+</body>
+</html>

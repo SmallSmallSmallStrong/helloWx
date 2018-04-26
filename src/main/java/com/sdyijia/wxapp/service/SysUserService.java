@@ -23,7 +23,7 @@ public class SysUserService {
      *
      * @return
      */
-    public SysUser save(SysUser sysUser) {
+    public SysUser save(SysUser sysUser) throws Exception{
         sysUser.setPassword(EncryptionUtils.getSha512Hash(sysUser.getPassword()));
         return userRepository.save(sysUser);
     }
