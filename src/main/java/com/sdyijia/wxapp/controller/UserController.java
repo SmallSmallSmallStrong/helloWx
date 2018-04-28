@@ -1,6 +1,9 @@
 package com.sdyijia.wxapp.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.sdyijia.wxapp.bean.SysRole;
 import com.sdyijia.wxapp.bean.SysUser;
+import com.sdyijia.wxapp.repository.RoleRepository;
 import com.sdyijia.wxapp.repository.UserRepository;
 import com.sdyijia.wxapp.service.SysUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -12,15 +15,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/user")
 public class UserController extends BaseController {
+    //前缀--文件夹名--如果有多层文件夹就写多层
+    private final String PREFIX = "user/";
+
+
     @Autowired
     UserRepository userRepository;
     @Autowired
     SysUserService sysUserService;
+    @Autowired
+    RoleRepository roleRepository;
 
 
     @GetMapping
@@ -96,4 +105,49 @@ public class UserController extends BaseController {
         //TODO 密码重置
         return "redirect:userList";
     }
+
+
+    @GetMapping("role")
+    public String getRole(Long id, Model m) {
+        //获取所有角色
+        if (Objects.nonNull(id) && id > 0) {
+            List<SysRole> allrole = roleRepository.findAll();
+            SysUser user = userRepository.getOne(id);
+            //获取用户 的角色
+            List<SysRole> userroles = user.getRoleList();
+            JSONArray jsonarr = new JSONArray();
+            if (Objects.nonNull(allrole))
+                //过滤掉所有不能启用的role
+                allrole.stream().filter(SysRole::getAvailable).forEach(role -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", role.getId());
+                    map.put("name", role.getRole());
+                    if (userroles.contains(role)) {
+                        map.put("ischecked", 1);//具有该角色
+                    } else {
+                        map.put("ischecked", 0);//没有改角色
+                    }
+                    jsonarr.add(map);
+                });
+            m.addAttribute("json", jsonarr);
+            m.addAttribute("id", id);
+            return PREFIX + "userRole";
+        }
+        //请传值
+        return "error";
+
+    }
+
+    @PostMapping("role")
+    public String setRole(Long id, Long[] rids) {
+        if (rids != null && rids.length > 0) {
+            List<SysRole> roles = roleRepository.findAllById(Arrays.asList(rids));
+            SysUser user = userRepository.getOne(id);
+            user.setRoleList(roles);
+            userRepository.save(user);
+        }
+        return "redirect:role?id=" + id;
+    }
+
+
 }

@@ -5,6 +5,7 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.apache.shiro.mgt.SecurityManager;
@@ -17,6 +18,10 @@ import java.util.Map;
 @Configuration
 @Order(999)
 public class ShiroConfiguration {
+
+    @Value("${server.servlet.session.timeout}")
+    private String serverSessionTimeout;
+
 
     /**
      * ShiroFilterFactoryBean 处理拦截资源文件问题。
@@ -44,7 +49,6 @@ public class ShiroConfiguration {
         //限制同一帐号同时在线的个数。
 //        filtersMap.put("kickout", kickoutSessionControlFilter());
         shiroFilterFactoryBean.setFilters(filtersMap);
-
         // 权限控制map.
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
         // 配置不会被拦截的链接 顺序判断

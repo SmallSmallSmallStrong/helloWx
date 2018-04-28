@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="/modules/jquery/1.8.3/jquery.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #tableDiv {
+            margin: 0 auto;
+        }
+
+        #tableDiv tr {
+            width: 1200px;
+            display: block;
+        }
+
+        #tableDiv tr td {
+            width: 194px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        #tableDiv tr td .tdDiv {
+            width: 150px;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            justify-content: center;
+            margin-left: 15px;;
+
+            position: relative;
+        }
+
+        #tableDiv tr td .tdDiv input {
+            position: absolute;
+            left: 15px;
+        }
+
+        #tableDiv tr td .tdDiv label {
+            width: 130px;
+            margin-left: 30px;
+        }
+    </style>
+
+</head>
+<body>
+
+<!--重新登录时会判断当前用户是否登录如果已经登录则返回主页否则返回登录页-->
+<a href="../login">主页</a>
+
+<form th:action="@{'/user/role'}" th:method="post">
+    <table border="0" cellspacing="0" cellpadding="0" id="tableDiv">
+    </table>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        getData();
+        $("#tableDiv tr td:even").css("background", "#cbeaf9");
+    })
+
+    function getData() {
+        var data = [(${json})];
+        var id = [(${id})];
+        for (var i = 0; i < data.length; i += 6) {
+            var html = '<tr>';
+            for (var j = 0; j < 6; j++) {
+                if (data[i + j] == undefined) {
+                    html += '<td>\
+                                <div class="tdDiv">\
+                                </div>\
+                             </td>';
+                } else {
+                    var tmp = "";
+                    console.log(data[i + j].ischecked);
+                    if (!!data[i + j].ischecked) {
+                        tmp = ' checked';
+                    }
+                    html += '<td>\
+                                <div class="tdDiv">\
+                                    <input name="rids" id="a'+i+'" type="radio"  value="' + data[i + j].id + '" ' + tmp + '/>' +
+                        '<label for="a'+i+'">' + data[i + j].name + '</label>\
+                             </div>\
+                          </td>';
+                }
+            }
+            html += '</tr>';
+            $("#tableDiv").append(html);
+            $("#tableDiv").append("<input type=\"hidden\" name='id' value=\""+id+"\" >");
+            $("#tableDiv").append("<input type=\"submit\"  value=\"保存\" >");
+        }
+    }
+</script>
+</body>
+</html>

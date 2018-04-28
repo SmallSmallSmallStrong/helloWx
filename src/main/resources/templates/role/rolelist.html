@@ -25,11 +25,11 @@
         <td th:text="${role.getAvailable()}"></td>
         <td th:text="${role.getDescription()}"></td>
         <td>
-            <a th:href="@{'role/permission?ids='  + ${role.id} }">角色权限管理</a>
+            <a th:href="@{'/role/permission?ids='  + ${role.id} }">角色权限管理</a>
         </td>
         <td>
-            <a th:href="@{'role/toupdate?id=' + ${role.id}}">修改</a>
-            <a th:href="@{role/remove}">删除</a>
+            <a th:href="@{'/role/toupdate?id=' + ${role.id}}">修改</a>
+            <a th:href="@{'/role/delete?ids=' + ${role.id}}">删除</a>
         </td>
     </tr>
 </table>

@@ -13,6 +13,7 @@
             <th>名称</th>
             <th>微信</th>
             <th>掩码</th>
+            <th>角色</th>
             <th>用户状态</th>
             <th>操作</th>
         </tr>
@@ -22,10 +23,12 @@
             <td th:text="${user.name}"></td>
             <td th:text="${user.wxUser}"></td>
             <td th:text="${user.salt}"></td>
+            <td th:text="${user.roleList==null||user.roleList.size() == 0 ?'空':user.roleList[0].role}"></td>
             <td th:text="${user.state}"></td>
             <td  >
-                <a th:href="@{'del?id=' + ${user.id}}">删除</a>
-                <a th:href="@{'resetpwd?id=' + ${user.id}}">重置密码</a>
+                <a th:href="@{'/user/del?id=' + ${user.id}}">删除</a>
+                <a th:href="@{'/user/role?id=' + ${user.id}}">角色</a>
+                <a th:href="@{'/user/resetpwd?id=' + ${user.id}}">重置密码</a>
             </td>
         </tr>
     </table>

@@ -1,8 +1,16 @@
 package com.sdyijia.wxapp.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.sdyijia.wxapp.bean.SysPermission;
 import com.sdyijia.wxapp.bean.SysRole;
+import com.sdyijia.wxapp.bean.SysUser;
+import com.sdyijia.wxapp.repository.PermissionRepository;
 import com.sdyijia.wxapp.repository.RoleRepository;
+import com.sdyijia.wxapp.repository.UserRepository;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +31,10 @@ public class RoleController {
 
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    PermissionRepository permissionRepository;
 
     /**
      * 获取全部或者指定id的角色
@@ -44,38 +56,47 @@ public class RoleController {
      * @param ids
      * @return
      */
-    @GetMapping("/premission")
-    public ModelAndView permission(String ids, Model m) {
-//        String[] strids = ids.split(",");
-//        List<Long> list = null;
-//        if (strids != null && strids.length > 0)
-//            list = Arrays.stream(strids).map(Long::parseLong).collect(Collectors.toList());
-//        if (Objects.nonNull(list) && list.size() == 1) {
-//            list.forEach();
-//        }
+    @GetMapping("/permission")
+    public ModelAndView permission(String ids) {
         SysRole role = roleRepository.getOne(Long.parseLong(ids));
         List<SysPermission> rolePremissionList = role.getPermissions();
-
-        List<String> level = new ArrayList<>();
-        List<String> prant = new ArrayList<>();
-        List<String> id = new ArrayList<>();
-        List<String> name = new ArrayList<>();
-        //TODO 未写完待续
-        rolePremissionList.forEach(premission -> {
-
-            premission.getName();
-
-            premission.getParentId();
-
-            premission.getId();
-
-            premission.getResourceType();
-        });
-//        JSONObject.toJSONString()
         ModelAndView mv = new ModelAndView(PREFIX + "rolepremission");
+        List<SysPermission> perlist = permissionRepository.findAll();
+        if (Objects.nonNull(perlist) && perlist.size() > 0) {
+            rolePremissionList.sort(Comparator.comparing(p -> p.getId()));
+            JSONArray json = new JSONArray();
+            perlist.forEach(premission -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("name", premission.getName());
+                map.put("parentid", premission.getParentId());
+                map.put("id", premission.getId());
+                map.put("route", premission.getUrl());
+                boolean rol = rolePremissionList.contains(premission);
+                if (rol) {
+                    map.put("ischeck", 1);//证明在里面
+                } else {
+                    map.put("ischeck", 0);//不在里面
+                }
+
+                json.add(map);
+            });
+            mv.addObject("json", json);
+        }
+        mv.addObject("role", JSON.toJSONString(role));
         return mv;
     }
 
+    @PostMapping("/permission")
+    public String permission(Long[] permissionId, Long roleId) {
+        if (Objects.nonNull(roleId)) {
+            SysRole role = roleRepository.getOne(roleId);
+            List<SysPermission> permissions = permissionRepository.findAllById(Arrays.asList(permissionId));
+            System.out.println(Arrays.toString(permissionId));
+            role.setPermissions(permissions);
+            roleRepository.save(role);
+        }
+        return "redirect:permission?ids=" + roleId;
+    }
 
     /**
      * 删除指定id的一个或多个角色
@@ -85,6 +106,8 @@ public class RoleController {
      */
     @GetMapping("/delete")
     public String getRoleDelete(String ids) {
+        if (ids == null || "".equals(ids.trim()))
+            return PREFIX + "rolelist";
         String[] strids = ids.split(",");
         List<Long> list = null;
         if (strids != null && strids.length > 0)
@@ -110,6 +133,29 @@ public class RoleController {
         SysRole sysrole = getRoleList(id).get(0);
         m.addAttribute("role", sysrole);
         return PREFIX + "roleupdata";
+    }
+
+    @PostMapping("/updata")
+    public String update(SysRole role, Model m) {
+        String name = role.getRole();
+        String des = role.getDescription();
+        Boolean ava = role.getAvailable();
+        if (Objects.isNull(name) || "".equals(name.trim()) || Objects.isNull(des) || "".equals(des.trim())) {
+            m.addAttribute("message", "数据格式传输错误");
+            return "error";
+        }
+        Long id = role.getId();
+        if (Objects.nonNull(id)) {
+            SysRole sysRole = roleRepository.getOne(id);
+            sysRole.setRole(name);
+            sysRole.setDescription(des);
+            sysRole.setAvailable(ava);
+            roleRepository.save(sysRole);
+            return "redirect:";
+        } else {
+            m.addAttribute("message", "数据格式传输错误");
+            return "error";
+        }
     }
 
     /**

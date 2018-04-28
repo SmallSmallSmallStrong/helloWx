@@ -1,8 +1,6 @@
 package com.sdyijia.wxapp.bean;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.List;
 
 @Entity
@@ -28,6 +26,17 @@ public class SysUser extends Base {
         return this.username+this.salt;
     }
 
+
+    @Override
+    public String toString() {
+        return "SysUser{" +
+                "username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", wxUser=" + wxUser +
+                ", salt='" + salt + '\'' +
+                ", state=" + state +
+                '}';
+    }
 
     public WxUser getWxUser() {
         return wxUser;

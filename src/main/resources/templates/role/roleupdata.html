@@ -5,10 +5,14 @@
     <title>角色更新</title>
 </head>
 <body>
-<form th:action="@{role/updata}" th:method="post">
+<a href="../login">主页</a>
+<form th:action="@{updata}" th:method="post">
+    <input th:name="id" type="hidden" th:value="${role.id}">
     角色名<input th:name="role" type="text" th:value="${role.role}"><br>
     角色描述<input th:name="description" type="text" th:value="${role.description}"><br>
-    角色是否可用<input th:name="available" type="text" th:value="${role.available}"><br>
+    角色是否可用<input th:name="available" th:type="radio"  th:checked="${role.available?1:0}" th:value="true">是
+    <input th:name="available" th:type="radio"   th:checked="${role.available?0:1}" th:value="false">否 <br>
+    <input th:type="submit" th:value="提交">
 </form>
 </body>
 </html>
