@@ -77,7 +77,6 @@ public class RoleController {
                 } else {
                     map.put("ischeck", 0);//不在里面
                 }
-
                 json.add(map);
             });
             mv.addObject("json", json);
