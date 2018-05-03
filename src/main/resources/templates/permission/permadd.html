@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>添加权限分组</title>
+</head>
+<body>
+<a href="../login">主页</a>
+<form th:action="@{modify}" th:method="post">
+    <div th:if="${perm != null}">
+        <input type="hidden" th:name="id" th:value="${perm.getId()}">
+        功能名称<input type="text" th:name="name" th:value="${perm.getName()}">
+        功能类型
+        <span th:if="${perm.getResourceType() == null}">
+            <select name="resourceType">
+            <option value ="menu">菜单</option>
+            <option value ="button" >按钮</option>
+            </select>
+        </span>
+        <span th:if="${perm.getResourceType() != null && perm.getResourceType() == 'menu'}">
+            <select name="resourceType">
+            <option value ="menu" selected>菜单</option>
+            <option value ="button" >按钮</option>
+            </select>
+        </span>
+        <span th:if="${perm.getResourceType() != null && perm.getResourceType() == 'button'}">
+            <select name="resourceType">
+            <option value ="menu">菜单</option>
+            <option value ="button" selected>按钮</option>
+            </select>
+        </span>
+        资源路径<input type="text" th:name="url" th:value="${perm.getUrl()}">
+        权限字符串<input type="text" th:name="permission" th:value="${perm.getPermission()}">
+        是否显示&nbsp;&nbsp;
+        <span th:if="${perm.getAvailable() == null}">
+        <input th:type="radio" th:name="available" th:value="true">显示
+        <input th:type="radio" th:name="available" th:value="false">不显示
+        </span>
+        <span th:if="${perm.getAvailable() != null && perm.getAvailable() == true}">
+        <input th:type="radio" th:name="available" th:value="true" checked>显示
+        <input th:type="radio" th:name="available" th:value="false">不显示
+        </span>
+        <span th:if="${perm.getAvailable() != null && perm.getAvailable() == false}">
+        <input th:type="radio" th:name="available" th:value="true">显示
+        <input th:type="radio" th:name="available" th:value="false" checked>不显示
+        </span>
+    </div>
+    <div th:if="${perm == null}">
+        功能名称<input type="text" th:name="name">
+        功能类型<select name="resourceType">
+        <option value="menu">菜单</option>
+        <option value="button">按钮</option>
+    </select>
+        资源路径<input type="text" th:name="url">
+        权限字符串<input type="text" th:name="permission">
+        是否显示&nbsp;&nbsp;<input th:type="radio" th:name="available" th:value="true">显示
+        <input th:type="radio" th:name="available" th:value="false">不显示
+    </div>
+    <input th:type="reset" type="reset" th:value="重置">
+    <input th:type="submit" th:value="提交">
+</form>
+</body>
+</html>

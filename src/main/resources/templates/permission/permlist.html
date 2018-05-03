@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--重新登录时会判断当前用户是否登录如果已经登录则返回主页否则返回登录页-->
+<a href="../login">主页</a>
+
+
+<div>
+    <a th:href="@{/permission/toadd}">添加权限分组</a>
+</div>
+<table style="min-width: 600px;" border="1" cellspacing="0">
+    <tr>
+        <th style="width: 10%;">序号</th>
+        <th style="width: 10%;">是否显示</th>
+        <th style="width:20%;">名称</th>
+        <th style="width: 20%;">操作</th>
+    </tr>
+    <tr th:each="perm , stat : ${permlist}">
+        <td th:text="${stat.count}"></td>
+        <td th:if="${perm.getAvailable() eq true}" th:text="显示"></td>
+        <td th:if="${perm.getAvailable() eq false}" th:text="隐藏"></td>
+        <td th:text="${perm.getName()}"></td>
+        <td>
+            <a th:href="@{'/permission/toadd?ids=' + ${perm.id}}">修改</a>
+            <a th:href="@{'/permission/delete?ids=' + ${perm.id}}">删除</a>
+            <a th:href="@{'/permission/functionlist?ids=' + ${perm.id}}">权限列表</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

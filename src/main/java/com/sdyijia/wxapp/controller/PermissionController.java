@@ -5,14 +5,15 @@ import com.sdyijia.wxapp.bean.SysRole;
 import com.sdyijia.wxapp.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import javax.validation.Valid;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -27,9 +28,100 @@ public class PermissionController {
     PermissionRepository permissionRepository;
 
     @GetMapping
-    public String getPermissionList(Model m, String ids) {
-        m.addAttribute("rolelist", getPermissionList(ids));
-        return PREFIX + "rolelist";
+    public String getPermissionList(Model m) {
+        List<SysPermission> allByParentId = permissionRepository.findAllByParentId(0l);
+        m.addAttribute("permlist", allByParentId);
+        return PREFIX + "permlist";
+    }
+
+    /**
+     * 删除权限分组
+     * @param m
+     * @param ids
+     * @return
+     */
+    @GetMapping("/delete")
+    @Transactional
+    public String delete(Model m,String ids){
+        long l = Long.parseLong(ids);
+        permissionRepository.deleteAllByParentId(l);
+        permissionRepository.deleteById(l);
+        return "redirect:";
+    }
+
+    /**
+     * 权限列表
+     * @param m
+     * @param ids
+     * @return
+     */
+    @GetMapping("/functionlist")
+    public String functionList(Model m,String ids){
+        long l = Long.parseLong(ids);
+        List<SysPermission> allByParentId = permissionRepository.findAllByParentId(l);
+        m.addAttribute("functionlist",allByParentId);
+        return PREFIX + "functionlist";
+    }
+    /**
+     * 保存或修改权限分组
+     *
+     * @param m
+     * @return
+     */
+    @PostMapping("/modify")
+    public String modifyPermission(Model m, SysPermission perm) {
+        if (perm.getId() == null) {
+            perm.setParentId(0l);
+            perm.setParentIds("0/");
+            permissionRepository.save(perm);
+        } else {
+            Optional<SysPermission> byId = permissionRepository.findById(perm.getId());
+            if (byId.isPresent()) {
+                SysPermission sysPermission = byId.get();
+                sysPermission = copyPerm(sysPermission, perm);
+                permissionRepository.save(sysPermission);
+            }
+        }
+        return "redirect:";
+    }
+
+    private SysPermission copyPerm(SysPermission oldperm, SysPermission newperm) {
+        if (newperm.getAvailable() != null) {
+            oldperm.setAvailable(newperm.getAvailable());
+        }
+        if (newperm.getName() != null && newperm.getName().trim().length() != 0) {
+            oldperm.setAvailable(newperm.getAvailable());
+        }
+        if (newperm.getResourceType() != null && newperm.getResourceType().trim().length() != 0) {
+            oldperm.setResourceType(newperm.getResourceType());
+        }
+        if (newperm.getUrl() != null && newperm.getUrl().trim().length() != 0) {
+            oldperm.setUrl(newperm.getUrl());
+        }
+        if (newperm.getPermission() != null && newperm.getPermission().trim().length() != 0) {
+            oldperm.setPermission(newperm.getPermission());
+        }
+        return oldperm;
+    }
+
+    /**
+     * 跳转到增加修改权限分组界面
+     *
+     * @param m
+     * @param ids
+     * @return
+     */
+    @GetMapping("/toadd")
+    public String modifyPermission(Model m, String ids) {
+        if (ids != null && ids != "" && ids.trim().length() > 0) {
+            long l = Long.parseLong(ids);
+            Optional<SysPermission> byId = permissionRepository.findById(l);
+            if(byId.isPresent()){
+                SysPermission sysPermission = byId.get();
+                m.addAttribute("perm",sysPermission );
+            }
+        }
+        return PREFIX + "permadd";
     }
 
     /**
@@ -53,9 +145,6 @@ public class PermissionController {
         }
         return Objects.requireNonNull(permissionlist);
     }
-
-
-
 
 
 }
