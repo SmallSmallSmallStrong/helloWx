@@ -8,7 +8,7 @@ import org.apache.shiro.crypto.hash.Sha512Hash;
  */
 public final class EncryptionUtils {
 
-    private static final String salt = "LLOIP_OP_1688@SJ";
+    public static final String salt = "LLOIP_OP_1688@SJ";
 
     private EncryptionUtils() {
     }

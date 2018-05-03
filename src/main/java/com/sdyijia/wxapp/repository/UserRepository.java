@@ -12,6 +12,4 @@ public interface UserRepository extends JpaRepository<SysUser, Long> ,JpaSpecifi
      */
     SysUser findByUsername(String username);
 
-
-
 }

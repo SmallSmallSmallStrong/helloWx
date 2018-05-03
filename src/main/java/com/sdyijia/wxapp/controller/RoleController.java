@@ -107,7 +107,7 @@ public class RoleController {
     @GetMapping("/delete")
     public String getRoleDelete(String ids) {
         if (ids == null || "".equals(ids.trim()))
-            return PREFIX + "rolelist";
+            return "redirect:";
         String[] strids = ids.split(",");
         List<Long> list = null;
         if (strids != null && strids.length > 0)
@@ -117,7 +117,7 @@ public class RoleController {
                 roleRepository.deleteById(roleid);
             });
         }
-        return PREFIX + "rolelist";
+        return "redirect:";
     }
 
 
