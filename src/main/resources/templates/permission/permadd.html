@@ -9,6 +9,7 @@
 <form th:action="@{modify}" th:method="post">
     <div th:if="${perm != null}">
         <input type="hidden" th:name="id" th:value="${perm.getId()}">
+        <input type="hidden" th:name="parentId" th:value="${perm.getParentId()}">
         功能名称<input type="text" th:name="name" th:value="${perm.getName()}">
         功能类型
         <span th:if="${perm.getResourceType() == null}">
@@ -46,6 +47,8 @@
         </span>
     </div>
     <div th:if="${perm == null}">
+        <span th:if="${parentId != '' && parentId != null}"><input type="hidden" th:name="parentId" th:value="${parentId}" ></span>
+        <span th:if="${parentId == '' || parentId == null}"><input type="hidden" th:name="parentId" th:value="0" ></span>
         功能名称<input type="text" th:name="name">
         功能类型<select name="resourceType">
         <option value="menu">菜单</option>

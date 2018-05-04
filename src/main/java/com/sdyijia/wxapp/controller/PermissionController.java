@@ -29,20 +29,21 @@ public class PermissionController {
 
     @GetMapping
     public String getPermissionList(Model m) {
-        List<SysPermission> allByParentId = permissionRepository.findAllByParentId(0l);
+        List<SysPermission> allByParentId = permissionRepository.findAllByParentIdOrderByIdAsc(0l);
         m.addAttribute("permlist", allByParentId);
         return PREFIX + "permlist";
     }
 
     /**
      * 删除权限分组
+     *
      * @param m
      * @param ids
      * @return
      */
     @GetMapping("/delete")
     @Transactional
-    public String delete(Model m,String ids){
+    public String delete(Model m, String ids) {
         long l = Long.parseLong(ids);
         permissionRepository.deleteAllByParentId(l);
         permissionRepository.deleteById(l);
@@ -51,17 +52,20 @@ public class PermissionController {
 
     /**
      * 权限列表
+     *
      * @param m
      * @param ids
      * @return
      */
     @GetMapping("/functionlist")
-    public String functionList(Model m,String ids){
+    public String functionList(Model m, String ids) {
         long l = Long.parseLong(ids);
-        List<SysPermission> allByParentId = permissionRepository.findAllByParentId(l);
-        m.addAttribute("functionlist",allByParentId);
+        List<SysPermission> allByParentId = permissionRepository.findAllByParentIdOrderByIdAsc(l);
+        m.addAttribute("functionlist", allByParentId);
+        m.addAttribute("parentId", l);
         return PREFIX + "functionlist";
     }
+
     /**
      * 保存或修改权限分组
      *
@@ -71,10 +75,8 @@ public class PermissionController {
     @PostMapping("/modify")
     public String modifyPermission(Model m, SysPermission perm) {
         if (perm.getId() == null) {
-            perm.setParentId(0l);
-            perm.setParentIds("0/");
             permissionRepository.save(perm);
-        } else {
+        }else {
             Optional<SysPermission> byId = permissionRepository.findById(perm.getId());
             if (byId.isPresent()) {
                 SysPermission sysPermission = byId.get();
@@ -90,7 +92,7 @@ public class PermissionController {
             oldperm.setAvailable(newperm.getAvailable());
         }
         if (newperm.getName() != null && newperm.getName().trim().length() != 0) {
-            oldperm.setAvailable(newperm.getAvailable());
+            oldperm.setName(newperm.getName());
         }
         if (newperm.getResourceType() != null && newperm.getResourceType().trim().length() != 0) {
             oldperm.setResourceType(newperm.getResourceType());
@@ -100,6 +102,9 @@ public class PermissionController {
         }
         if (newperm.getPermission() != null && newperm.getPermission().trim().length() != 0) {
             oldperm.setPermission(newperm.getPermission());
+        }
+        if (newperm.getParentId() != null ) {
+            oldperm.setParentId(newperm.getParentId());
         }
         return oldperm;
     }
@@ -112,13 +117,20 @@ public class PermissionController {
      * @return
      */
     @GetMapping("/toadd")
-    public String modifyPermission(Model m, String ids) {
+    public String modifyPermission(Model m, String ids, String parentId) {
         if (ids != null && ids != "" && ids.trim().length() > 0) {
             long l = Long.parseLong(ids);
             Optional<SysPermission> byId = permissionRepository.findById(l);
-            if(byId.isPresent()){
+            if (byId.isPresent()) {
                 SysPermission sysPermission = byId.get();
-                m.addAttribute("perm",sysPermission );
+                m.addAttribute("perm", sysPermission);
+            }
+        } else if (parentId != null && ids != "" && parentId.trim().length() > 0) {
+            long l = Long.parseLong(parentId);
+            Optional<SysPermission> byId = permissionRepository.findById(l);
+            if (byId.isPresent()) {
+                SysPermission sysPermission = byId.get();
+                m.addAttribute("parentId", sysPermission.getId());
             }
         }
         return PREFIX + "permadd";

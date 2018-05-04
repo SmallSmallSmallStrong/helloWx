@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PermissionRepository extends JpaRepository<SysPermission, Long> {
 
-    List findAllByParentId(Long id);
+    List findAllByParentIdOrderByIdAsc(Long id);
 
     void deleteAllByParentId(Long parentId);
 
