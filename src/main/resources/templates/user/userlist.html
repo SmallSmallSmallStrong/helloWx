@@ -7,6 +7,10 @@
 <body>
 <!--重新登录时会判断当前用户是否登录如果已经登录则返回主页否则返回登录页-->
 <a href="../login">主页</a>
+
+
+<a th:href="@{'/user/userAdd'}">添加用户</a>
+
     <table>
         <tr>
             <th>账号</th>
@@ -29,6 +33,7 @@
                 <a th:href="@{'/user/del?id=' + ${user.id}}">删除</a>
                 <a th:href="@{'/user/role?id=' + ${user.id}}">角色</a>
                 <a th:href="@{'/user/resetpwd?id=' + ${user.id}}">重置密码</a>
+                <a th:href="@{'/user/userUpdata?id=' + ${user.id}}">修改信息</a>
             </td>
         </tr>
     </table>

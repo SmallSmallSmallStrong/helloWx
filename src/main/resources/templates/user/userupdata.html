@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户更新</title>
+</head>
+<body>
+<form th:action="@{'/user/userUpdata'}" th:method="post">
+    账号：<label th:text='${user.username}'> </label><br>
+    <input type="hidden" th:name="id" th:value="${user.id}">
+    昵称：<input type="text" th:name="name" th:value="${user.name}"><br>
+    掩码: <input type="text" th:name="salt" th:value="${user.salt}"><br>
+    密码: <input type="text" th:name="password"><span>掩码跟密码需要一同修改否则不会生效</span><br>
+    用户状态:<input th:name="state" th:type="radio" th:value="0" th:checked="${user.state}==0?1:0">未认证
+    <input th:name="state" th:type="radio" th:value="1" th:checked="${user.state}==1?1:0">正常
+    <input th:name="state" th:type="radio" th:value="2" th:checked="${user.state}==2?1:0">锁定 <br>
+
+    <input type="submit" th:value="更新">
+</form>
+</body>
+</html>

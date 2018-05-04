@@ -2,13 +2,17 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>主页</title>
 </head>
 <body>
 欢迎来到登录后首页
 <br>
+
 <a th:href="@{role}">角色管理列表</a><br><br>
 <a th:href="@{permission}">权限管理列表</a><br><br>
 <a th:href="@{user/userList}">用户管理列表</a><br><br>
+
+<a th:href="@{'/logout'}">退出</a><br><br>
+
 </body>
 </html>

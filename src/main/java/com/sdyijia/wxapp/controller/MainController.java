@@ -1,12 +1,15 @@
 package com.sdyijia.wxapp.controller;
 
 import com.sdyijia.wxapp.bean.SysUser;
+import com.sdyijia.wxapp.repository.UserRepository;
+import com.sdyijia.wxapp.service.SysUserService;
 import com.sdyijia.wxapp.util.EncryptionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,10 +20,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 public class MainController {
     public final static Logger logger = LoggerFactory.getLogger(MainController.class);
+
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping("/login")
     public String login(Model m, RedirectAttributes redirectAttributes) {
@@ -47,10 +54,15 @@ public class MainController {
         }
         String loginName = user.getUsername();
         logger.info("准备登陆用户 =>  " + loginName);
-        //目前的掩码使用的是EncryptionUtils类的私有变量
-        String salt = user.getSalt();
+        //根据用户名从数据库中获取用户信息
+        SysUser dbuser = userRepository.findByUsername(user.getUsername());
+        String salt = "";
         String pwd = "";
-        if (salt != null && !salt.equals("")) {
+        //判断该用户是否使用默认掩码
+        if (Objects.nonNull(dbuser) && Objects.nonNull(dbuser.getSalt()) && !"".equals(dbuser.getSalt().trim()))
+            salt = dbuser.getSalt();
+        //如果掩码为空使用的是EncryptionUtils类的常量salt
+        if (salt != null && !salt.trim().equals("")) {
             pwd = EncryptionUtils.getSha512Hash(user.getPassword(), salt);
         } else {
             pwd = EncryptionUtils.getSha512Hash(user.getPassword());

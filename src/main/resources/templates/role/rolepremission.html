@@ -77,10 +77,15 @@
             html += '<tr>\n' +
                 '       <th rowspan="6" class="tdDiv" >' + e1.name + '</th>' +
                 '    </tr>';
-            for (var i = 0; i < data.length; i += 6) {
+            //获取所有e1对应的子目录
+            var pid = e1.id;
+            var edata = data.filter(function (v) {
+                return v.parentid == pid;
+            });
+            for (var i = 0; i < edata.length; i += 6) {
                 html += '<tr>';
                 for (var j = 0; j < 6; j++) {
-                    if (data[i + j] == undefined) {
+                    if (edata[i + j] == undefined) {
                         html += '<td>\
                                 <div class="tdDiv">\
                                 </div>\
@@ -89,11 +94,11 @@
                         html += '<td>\
                                 <div class="tdDiv">\
                                     <input  name="permissionId" type="checkbox"   ';
-                        if (!!data[i + j].ischeck) {
+                        if (!!edata[i + j].ischeck) {
                             html += ' checked  ';
                         }
-                        html += '    value="' + data[i + j].id + '" />\
-                                    <label>' + data[i + j].name + '</label>\
+                        html += '    value="' + edata[i + j].id + '" />\
+                                    <label>' + edata[i + j].name + '</label>\
                                 </div>\
                             </td>';
                     }

@@ -8,6 +8,7 @@ import com.sdyijia.wxapp.repository.UserRepository;
 import com.sdyijia.wxapp.service.SysUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,8 @@ public class UserController extends BaseController {
     SysUserService sysUserService;
     @Autowired
     RoleRepository roleRepository;
+    @Value("${reset_password}")
+    private String restpwd;
 
 
     @GetMapping
@@ -81,12 +84,66 @@ public class UserController extends BaseController {
      *
      * @return
      */
-    @RequestMapping("/userAdd")
+    @GetMapping("/userAdd")
     @RequiresPermissions("userInfo:add")//权限管理;
     public String userInfoAdd() {
-        //TODO 使用管理员用户直接添加用户
-        return "userInfoAdd";
+        //使用用户管理员（具有该权限的）直接添加用户
+        return PREFIX + "useradd";
     }
+
+    /**
+     * 用户添加;
+     *
+     * @return
+     */
+    @PostMapping("/userAdd")
+    @RequiresPermissions("userInfo:add")//权限管理;
+    public String userInfoAdd(SysUser user, Model m) throws Exception {
+        if (Objects.nonNull(user) && !"".equals(user.getUsername().trim()) && Objects.nonNull(user.getState()) && !"".equals(user.getPassword().trim()) && !"".equals(user.getName().trim())) {
+            sysUserService.save(user);
+        }
+        return "redirect:userList";
+    }
+
+    /**
+     * 更新用户信息 不包括账户名，密码
+     *
+     * @param id 更新那个user
+     * @param m
+     * @return
+     */
+    @GetMapping("/userUpdata")
+    public String userUpdata(Long id, Model m) {
+        SysUser sysUser = null;
+        if (Objects.nonNull(id))
+            sysUser = userRepository.getOne(id);
+        m.addAttribute("user", sysUser);
+        return "user/userupdata";
+    }
+
+    /**
+     * 更新用户信息 不包括账户名，密码
+     *
+     * @param user 更新后的user
+     * @return
+     */
+    @PostMapping("/userUpdata")
+    public String userUpdata(SysUser user) throws Exception {
+        if (Objects.nonNull(user) && Objects.nonNull(user.getId())) {
+            SysUser dbuser = userRepository.getOne(user.getId());
+            dbuser.setName(user.getName());
+            dbuser.setState(user.getState());
+            if (user.getSalt() != null && !user.getSalt().trim().equals("") && Objects.nonNull(user.getPassword()) && !user.getPassword().trim().equals("")) {
+                dbuser.setSalt(user.getSalt());
+                dbuser.setPassword(user.getPassword());
+                sysUserService.save(dbuser);
+            } else {
+                userRepository.save(dbuser);
+            }
+        }
+        return "redirect:userList";
+    }
+
 
     /**
      * 用户删除;
@@ -100,13 +157,28 @@ public class UserController extends BaseController {
         return "redirect:userList";
     }
 
+    /**
+     * 重置密码
+     *
+     * @param id
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/resetpwd")
-    public String resetpwd(Long id) {
-        //TODO 密码重置
+    public String resetpwd(Long id) throws Exception {
+        SysUser user = userRepository.getOne(id);
+        user.setPassword(restpwd);
+        sysUserService.save(user);
         return "redirect:userList";
     }
 
-
+    /**
+     * 查询所有角色跳转角色页面
+     *
+     * @param id
+     * @param m
+     * @return
+     */
     @GetMapping("role")
     public String getRole(Long id, Model m) {
         //获取所有角色
@@ -138,6 +210,13 @@ public class UserController extends BaseController {
 
     }
 
+    /**
+     * 设置角色
+     *
+     * @param id
+     * @param rids
+     * @return
+     */
     @PostMapping("role")
     public String setRole(Long id, Long[] rids) {
         if (rids != null && rids.length > 0) {
