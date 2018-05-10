@@ -1,5 +1,7 @@
 package com.sdyijia.wxapp.aop.bean;
 
+import com.sdyijia.wxapp.modules.sys.bean.Base;
+
 import javax.persistence.Entity;
 import java.util.Date;
 
@@ -7,8 +9,7 @@ import java.util.Date;
  * 定义保存日志信息的类
  */
 @Entity
-public class LogAdmModel {
-    private Long id;
+public class LogAdmModel extends Base {
     private String userId; // 操作用户
     private String userName;
     private String admModel; // 模块
@@ -16,14 +17,6 @@ public class LogAdmModel {
     private Date createDate; // 创建时间
     private String admOptContent; // 操作内容
     private String desc; // 备注
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;

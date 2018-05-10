@@ -53,8 +53,4 @@ public class PermissionController {
         return Objects.requireNonNull(permissionlist);
     }
 
-
-
-
-
 }

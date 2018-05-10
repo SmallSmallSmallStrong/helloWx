@@ -15,7 +15,6 @@
         <tr>
             <th>账号</th>
             <th>名称</th>
-            <th>微信</th>
             <th>掩码</th>
             <th>角色</th>
             <th>用户状态</th>
@@ -25,7 +24,6 @@
         <tr th:each="user,index:${userlist}">
             <td th:text="${user.username}"></td>
             <td th:text="${user.name}"></td>
-            <td th:text="${user.wxUser}"></td>
             <td th:text="${user.salt}"></td>
             <td th:text="${user.roleList==null||user.roleList.size() == 0 ?'空':user.roleList[0].role}"></td>
             <td th:text="${user.state}"></td>
