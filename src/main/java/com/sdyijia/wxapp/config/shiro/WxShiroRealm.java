@@ -4,7 +4,7 @@ import com.sdyijia.wxapp.modules.sys.bean.SysPermission;
 import com.sdyijia.wxapp.modules.sys.bean.SysRole;
 import com.sdyijia.wxapp.modules.sys.bean.SysUser;
 import com.sdyijia.wxapp.modules.sys.bean.WxUser;
-import com.sdyijia.wxapp.repository.WxUserDao;
+import com.sdyijia.wxapp.modules.sys.repository.WxUserDao;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

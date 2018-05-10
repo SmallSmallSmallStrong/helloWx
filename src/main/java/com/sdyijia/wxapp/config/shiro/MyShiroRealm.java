@@ -3,7 +3,7 @@ package com.sdyijia.wxapp.config.shiro;
 import com.sdyijia.wxapp.modules.sys.bean.SysPermission;
 import com.sdyijia.wxapp.modules.sys.bean.SysRole;
 import com.sdyijia.wxapp.modules.sys.bean.SysUser;
-import com.sdyijia.wxapp.repository.UserRepository;
+import com.sdyijia.wxapp.modules.sys.repository.UserRepository;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

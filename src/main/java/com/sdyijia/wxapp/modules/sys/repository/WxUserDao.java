@@ -1,4 +1,4 @@
-package com.sdyijia.wxapp.repository;
+package com.sdyijia.wxapp.modules.sys.repository;
 
 import com.sdyijia.wxapp.modules.sys.bean.WxUser;
 import org.springframework.data.repository.CrudRepository;

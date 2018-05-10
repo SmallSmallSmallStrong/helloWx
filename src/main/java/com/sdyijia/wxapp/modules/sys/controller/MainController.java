@@ -1,7 +1,7 @@
 package com.sdyijia.wxapp.modules.sys.controller;
 
 import com.sdyijia.wxapp.modules.sys.bean.SysUser;
-import com.sdyijia.wxapp.repository.UserRepository;
+import com.sdyijia.wxapp.modules.sys.repository.UserRepository;
 import com.sdyijia.wxapp.util.EncryptionUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;

@@ -1,7 +1,7 @@
 package com.sdyijia.wxapp;
 
 import com.sdyijia.wxapp.modules.sys.bean.SysUser;
-import com.sdyijia.wxapp.repository.UserRepository;
+import com.sdyijia.wxapp.modules.sys.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
