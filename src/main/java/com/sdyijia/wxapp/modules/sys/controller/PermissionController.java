@@ -1,8 +1,7 @@
-package com.sdyijia.wxapp.controller;
+package com.sdyijia.wxapp.modules.sys.controller;
 
-import com.sdyijia.wxapp.bean.SysPermission;
-import com.sdyijia.wxapp.bean.SysRole;
-import com.sdyijia.wxapp.repository.PermissionRepository;
+import com.sdyijia.wxapp.modules.sys.bean.SysPermission;
+import com.sdyijia.wxapp.modules.sys.repository.PermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
