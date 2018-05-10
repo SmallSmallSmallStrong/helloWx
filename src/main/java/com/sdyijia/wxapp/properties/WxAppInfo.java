@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class WxAppInfo {
     @Value("${wx.appid}")
     private String appId;
-    @Value("$(wx.appsecret)")
+    @Value("${wx.appsecret}")
     private String appSecret;
 
     @Override
