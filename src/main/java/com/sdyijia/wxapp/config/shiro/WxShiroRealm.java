@@ -6,10 +6,7 @@ import com.sdyijia.wxapp.modules.sys.bean.SysUser;
 import com.sdyijia.wxapp.modules.sys.bean.WxUser;
 import com.sdyijia.wxapp.modules.sys.repository.WxUserDao;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -61,7 +58,7 @@ public class WxShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
-            throws AuthenticationException {
+            throws UnknownAccountException {
         logger.info("MyShiroRealm.doGetAuthenticationInfo()");
         //获取用户的输入的账号.
         String openid = (String) token.getPrincipal();
@@ -69,8 +66,8 @@ public class WxShiroRealm extends AuthorizingRealm {
         //通过username从数据库中查找 User对象，如果找到，没找到.
         //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
         WxUser userInfo = wxUserDao.findByOpenid(openid);
-        if (userInfo == null) {
-            return null;
+        if (userInfo == null) {//没有改用户
+            throw new UnknownAccountException();
         }
         logger.info("----->>userInfo=" + userInfo);
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
