@@ -27,6 +27,7 @@ public class LogAspect {
 
     @Autowired
     private ILogManager logManager;
+
     //TODO 如果修改包名请修改这里
     @Pointcut("execution(* com.sdyijia.wxapp..*.*(..))")
     public void managerLogPoint() {
@@ -67,7 +68,7 @@ public class LogAspect {
         LogAdmModel logBean = new LogAdmModel();
         logBean.setAdmModel(optModel);
         logBean.setAdmEvent(optEvent);
-        logBean.setDesc(desc);
+        logBean.setNote(desc);
         logBean.setCreateDate(new Date());
         logInfoGeneration.processingManagerLogMessage(jp,
                 logBean, method);

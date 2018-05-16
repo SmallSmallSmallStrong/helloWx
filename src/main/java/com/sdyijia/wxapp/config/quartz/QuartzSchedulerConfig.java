@@ -1,27 +1,25 @@
 package com.sdyijia.wxapp.config.quartz;
 
-import org.quartz.CronTrigger;
-import org.quartz.Trigger;
+import com.sdyijia.wxapp.config.quartz.dao.CronRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 @Configuration
 //@Component
-@EnableScheduling // 2.开启定时任务
+@EnableScheduling // 2.开启静态定时任务
 public class QuartzSchedulerConfig implements SchedulingConfigurer {
 
     //3.添加静态定时任务
-    @Scheduled(cron = "0/5 * * * * ?")
-    public void configureTasks() {
-        System.err.println("执行定时任务1: " + LocalDateTime.now());
-    }
+//    @Scheduled(cron = "0/5 * * * * ?")
+//    public void configureTasks() {
+//        System.err.println("执行定时任务1: " + LocalDateTime.now());
+//    }
 
     @Autowired
     CronRepository cronRepository;
@@ -36,9 +34,10 @@ public class QuartzSchedulerConfig implements SchedulingConfigurer {
 //                .withIdentity("trigger1", "group1")
 //                .startNow()
 //                .build();
-        scheduledTaskRegistrar.addTriggerTask(
+//        scheduledTaskRegistrar.addTriggerTask(
                 //1.添加任务内容(Runnable)
-                () -> System.out.println("执行定时任务2: " + LocalDateTime.now().toLocalTime()),null
+//                () -> System.out.println("执行定时任务2: " + LocalDateTime.now().toLocalTime()),
+//                null
                 //2.设置执行周期(Trigger)
 //                triggerContext -> {
 //                    //2.1 从数据库获取执行周期
@@ -51,6 +50,8 @@ public class QuartzSchedulerConfig implements SchedulingConfigurer {
 //                    return new CronTrigger(cron.getValue()).nextExecutionTime(triggerContext);
 //                }
 
-        );
+//        );
+
+
     }
 }

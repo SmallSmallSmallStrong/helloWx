@@ -16,7 +16,7 @@ public class LogAdmModel extends Base {
     private String admEvent; // 操作
     private Date createDate; // 创建时间
     private String admOptContent; // 操作内容
-    private String desc; // 备注
+    private String note; // 备注
 
     public String getUserId() {
         return userId;
@@ -66,11 +66,11 @@ public class LogAdmModel extends Base {
         this.admOptContent = admOptContent;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getNote() {
+        return note;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setNote(String note) {
+        this.note = note;
     }
 }
